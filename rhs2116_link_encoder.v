@@ -79,7 +79,7 @@ module rhs2116_link_encoder (
     // ========================================================================
     // Manchester Encoder DDR (100MHz domain)
     // ========================================================================
-    manchester_encoder_ddr u_manchester (
+    manchester_encoder_100m u_manchester (
         .clk_sys    (clk_sys),
         .rst_n      (rst_n),
         .tx_en      (enable),

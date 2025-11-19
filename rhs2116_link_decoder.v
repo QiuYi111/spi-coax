@@ -82,7 +82,7 @@ module rhs2116_link_decoder (
     assign fifo_din  = frame_data;
     assign fifo_wr_en = frame_data_valid;
 
-    async_fifo_200to100 #(
+    async_fifo_generic #(
         .DATA_WIDTH(32),
         .ADDR_WIDTH(4)  // 16 entries
     ) u_async_fifo (

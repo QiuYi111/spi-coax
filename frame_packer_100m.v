@@ -44,7 +44,7 @@ module frame_packer_100m (
     wire        fifo_full;
     wire        fifo_rd_en;
 
-    async_fifo_200to100 #(
+    async_fifo_generic #(
         .DATA_WIDTH(32),
         .ADDR_WIDTH(4)  // 16 entries
     ) u_async_fifo (
