@@ -1,110 +1,130 @@
 # RHS2116 Single-Wire Digital Link System
 
-## Overview
-This is a complete FPGA-based solution for transmitting RHS2116 SPI data over a single coaxial cable using Manchester encoding with Power-over-Coax (PoC) support.
+![Project Banner](assets/banner.jpg)
 
-## System Architecture
+[English](README.md) | [中文](README_CN.md)
+
+## 📖 Overview
+
+This project provides a complete FPGA-based solution for transmitting RHS2116 SPI sensor data over a single coaxial cable. It utilizes Manchester encoding and supports Power-over-Coax (PoC), enabling reliable data transmission and power delivery over a single wire. The system is designed for high-speed, low-latency applications, achieving a payload data rate of 22.85 Mbps over 1-3 meters of coaxial cable.
+
+---
+
+## ✨ Key Features
+
+| Feature | Specification | Description |
+| :--- | :--- | :--- |
+| **Payload Rate** | 22.85 Mbps | 714 kS/s × 32-bit |
+| **Line Rate** | 50 Mbps (Manchester) | 100 MHz Symbol Rate |
+| **Frame Format** | 56-bit | SYNC + CNT + DATA + CRC |
+| **Distance** | 1-3 meters | Coaxial Cable |
+| **Clocking** | Multi-domain | 64MHz SPI, 100MHz Sys, 200MHz CDR |
+| **Power** | PoC Support | Power-over-Coax capable |
+
+---
+
+## 🏗️ System Architecture
+
+![System Architecture](assets/arch.jpg)
 
 ### Transmit Side (Sensor End)
-```
-RHS2116 → SPI Master → Async FIFO → Frame Packer → Manchester Encoder → Coax
-```
+The transmitter interfaces with the RHS2116 sensor via SPI, buffers data through an asynchronous FIFO, packs it into frames with CRC protection, and applies Manchester encoding for transmission over the coaxial cable.
+
+`RHS2116 → SPI Master (64MHz) → Async FIFO → Frame Packer (100MHz) → Manchester Encoder → Coax`
 
 ### Receive Side (Remote End)
-```
-Coax → Soft CDR → Manchester Decoder → Frame Sync → Data Output
-```
+The receiver recovers the clock and data from the incoming signal using a Soft CDR (Clock Data Recovery) module, synchronizes to the frame structure, validates data integrity via CRC, and outputs the decoded SPI data.
 
-## Key Features
-- **Data Rate**: 714 kS/s × 32-bit = 22.85 Mbps payload
-- **Line Rate**: 80 Mbps Manchester encoded (160 MHz symbol rate)
-- **Frame Format**: 48-bit frames (8-bit SYNC + 8-bit CNT + 32-bit DATA + 8-bit CRC)
-- **Clocks**: 24 MHz SPI, 80 MHz link, 160/240 MHz Manchester
-- **Distance**: 1-3 meters over coaxial cable
-- **PoC**: Power and data sharing same cable
+`Coax → CDR (200MHz) → Frame Sync (100MHz) → Async FIFO → Data Output`
 
-## File Structure
+---
 
-### Core Modules
-- `spi_master_rhs2116.v` - SPI master for RHS2116 chip
-- `async_fifo.v` - Clock domain crossing FIFO
-- `frame_packer_80m.v` - Frame formatting with CRC
-- `manchester_encoder_serial.v` - Manchester encoding
-- `soft_cdr.v` - Clock and data recovery
-- `manchester_decoder_serial.v` - Manchester decoding
-- `frame_sync.v` - Frame synchronization and CRC check
+## 🛠️ Development Environment
 
-### Top Level
-- `spi_coax_encoder.v` - Complete transmit side
-- `spi_coax_decoder.v` - Complete receive side
+To build and simulate this project, you will need the following tools:
 
-## Usage
+### FPGA Development
+*   **IDE**: Intel Quartus Prime (Standard or Lite Edition)
+*   **Target Device**: Intel MAX 10 FPGA
+*   **Language**: Verilog HDL (IEEE 1364-2001)
 
-### Encoder (Transmit Side)
-```verilog
-spi_coax_encoder u_encoder (
-    .clk_spi(clk_24m),
-    .clk_link(clk_80m),
-    .clk_manch(clk_160m),
-    .rst_n(reset_n),
-    .enable(tx_enable),
-    // RHS2116 SPI
-    .cs_n(rhs_cs_n),
-    .sclk(rhs_sclk),
-    .mosi(rhs_mosi),
-    .miso(rhs_miso),
-    // Output
-    .coax_out(tx_coax)
-);
+### Simulation
+*   **Simulator**: [Icarus Verilog (iverilog)](http://iverilog.icarus.com/)
+*   **Waveform Viewer**: [GTKWave](http://gtkwave.sourceforge.net/)
+*   **Testbench**: Located in `testbench/` directory.
+
+### Recommended Setup
+```bash
+# Install iverilog and gtkwave on macOS (via Homebrew)
+brew install iverilog gtkwave
+
+# Install on Ubuntu/Debian
+sudo apt-get install iverilog gtkwave
 ```
 
-### Decoder (Receive Side)
-```verilog
-spi_coax_decoder u_decoder (
-    .clk_240m(clk_240m),
-    .clk_link(clk_80m),
-    .rst_n(reset_n),
-    .coax_in(rx_coax),
-    // Output data
-    .data_out(recv_data),
-    .data_valid(recv_valid),
-    .data_ready(recv_ready),
-    // Status
-    .cdr_locked(locked),
-    .frame_error(frame_err),
-    .sync_lost(lost_sync)
-);
+---
+
+## 🔩 Hardware & BOM
+
+> **Note**: A complete PCB design and detailed BOM will be added in future updates.
+
+### Core Components
+1.  **FPGA**: Intel MAX 10 Series (e.g., 10M08 or 10M16)
+    *   Selected for its instant-on capability and integrated ADC/Flash.
+2.  **Sensor**: Intan RHS2116
+    *   Digital electrophysiology stimulation/recording chip.
+3.  **Interface**: SMA or BNC Connectors
+    *   For robust coaxial cable connection.
+4.  **Cable**: 50Ω Coaxial Cable (RG174 or similar)
+    *   Impedance matching is critical for signal integrity.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/your-repo/spi-coax.git
+cd spi-coax
 ```
 
-## Clock Requirements
-- **Encoder**: 24 MHz, 80 MHz, 160 MHz
-- **Decoder**: 80 MHz, 240 MHz
-- All clocks should be phase-aligned for best performance
+### 2. Run Simulation
+A system-level testbench is provided to verify the complete link (Encoder + Decoder).
 
-## Critical Timing Notes
-- 240 MHz receiver clock is timing critical
-- Use proper timing constraints
-- Consider pipelining for 240 MHz logic
-- Input buffering recommended for receiver
+```bash
+# Compile and run using iverilog
+cd testbench
+iverilog -o sim_system tb_spi_coax_system.v ../*.v
+vvp sim_system
 
-## Status Signals
-### Encoder
-- `fifo_full` - FIFO is full (throttle SPI)
-- `fifo_empty` - FIFO is empty
-- `frame_count` - Current frame counter
-- `link_active` - Encoder is active
+# View waveforms
+gtkwave dump.vcd
+```
 
-### Decoder
-- `cdr_locked` - CDR has achieved lock
-- `frame_error` - CRC error detected
-- `sync_lost` - Frame synchronization lost
-- `phase_error_cnt` - CDR phase error counter
+### 3. Build Project
+Open the project in Quartus Prime and compile for your specific MAX 10 target device. Ensure timing constraints (SDC) are correctly applied, especially for the 200MHz CDR clock domain.
 
-## Design Notes
-This implementation follows the original design report architecture while adding:
-- Proper clock domain crossing
-- Status monitoring
-- Timing optimization suggestions
-- Clean module interfaces
+---
 
-The system is designed for MAX 10 FPGA implementation with careful attention to timing closure at 240 MHz.
+## 📂 Project Structure
+
+```text
+spi-coax/
+├── assets/                 # Images and visual assets
+├── docs/                   # Detailed documentation
+├── testbench/              # Simulation testbenches
+├── spi_master_rhs2116.v    # SPI Master Controller
+├── rhs2116_link_encoder.v  # Transmit Top Level
+├── rhs2116_link_decoder.v  # Receive Top Level
+├── frame_packer_100m.v     # Frame Assembly & CRC
+├── manchester_encoder_100m.v # Manchester Encoder
+├── cdr_4x_oversampling.v   # Clock Data Recovery
+├── frame_sync_100m.v       # Frame Synchronization
+└── top.v                   # System Loopback Top
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
