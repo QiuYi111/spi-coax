@@ -1,154 +1,278 @@
 # Project Index: RHS2116 Single-Wire Digital Link System
 
-Generated: 2025-11-19 15:30:00
+Generated: 2025-11-19
+**Project**: RHS2116 Single-Wire Digital Link System
+**Technology**: Verilog HDL for FPGA Implementation
 
 ## 📁 Project Structure
 
 ```
-/Users/jingyi/spi-coax/
-├── spi_master_rhs2116.v          # SPI master for RHS2116 chip
-├── async_fifo_generic.v          # Clock domain crossing FIFO
-├── frame_packer_80m.v            # Frame formatting with CRC
-├── manchester_encoder_100m.v     # Manchester line encoding
-├── soft_cdr.v                    # Clock and data recovery
-├── manchester_decoder_serial.v   # Manchester line decoding
-├── frame_sync.v                  # Frame synchronization and CRC check
-├── spi_coax_encoder.v            # Complete transmit side (top level)
-├── spi_coax_decoder.v            # Complete receive side (top level)
-├── README.md                     # Technical documentation
-├── plan.md                       # Engineering design report (Chinese)
-└── PROJECT_INDEX.md              # This file
+spi-coax/
+├── 📋 Documentation (docs/)
+│   ├── RECONSTRUCTION_PLAN.md          # System reconstruction strategy
+│   ├── RECONSTRUCTION_PLAN_CONSERVATIVE.md  # Conservative approach
+│   ├── RECONSTRUCTION_SUMMARY.md       # Implementation summary
+│   ├── CODE_QUALITY_ANALYSIS.md        # Code review and analysis
+│   ├── test_guide.md                   # Testing procedures
+│   └── plan.md                         # Development planning
+│
+├── 🔧 Core System Modules
+│   ├── top.v                           # System top-level (loopback)
+│   ├── spi_master_rhs2116.v            # SPI master controller
+│   ├── rhs2116_link_encoder.v          # Transmit side top-level
+│   ├── rhs2116_link_decoder.v          # Receive side top-level
+│   └── async_fifo_generic.v            # Clock domain crossing FIFO
+│
+├── 📡 Data Path Components
+│   ├── frame_packer_100m.v             # Frame assembly & CRC
+│   ├── manchester_encoder_100m.v       # Manchester encoding
+│   ├── cdr_4x_oversampling.v           # Clock data recovery
+│   └── frame_sync_100m.v               # Frame synchronization
+│
+├── 🧪 Testbench
+│   └── testbench/
+│       └── tb_spi_coax_system.v        # System-level testbench
+│
+└── 📚 Archive (deprecated/old versions)
+    └── archive/
+        ├── async_fifo.v
+        ├── frame_packer_80m.v
+        ├── frame_sync.v
+        ├── manchester_decoder_serial.v
+        ├── manchester_encoder_serial.v
+        ├── soft_cdr.v
+        ├── spi_coax_decoder.v
+        └── spi_coax_encoder.v
 ```
 
-## 🚀 System Architecture
+## 🎯 System Overview
+
+This project implements a complete single-wire digital link system for transmitting RHS2116 SPI sensor data over a coaxial cable using Manchester encoding with Power-over-Coax (PoC) support. The system achieves 22.85 Mbps payload data rate over 1-3 meters distance.
+
+### Key Specifications
+- **Data Rate**: 714 kS/s × 32-bit = 22.85 Mbps payload
+- **Line Rate**: 50 Mbps Manchester encoded (100 MHz symbol rate)
+- **Frame Format**: 56-bit frames {SYNC(8), CNT(8), DATA(32), CRC(8)}
+- **Clocks**: 64MHz SPI, 100MHz System, 200MHz CDR
+- **Distance**: 1-3 meters over coaxial cable
+- **Target**: MAX 10 FPGA implementation
+
+## 🚀 Entry Points
+
+### System Level
+- **`top.v`** - Complete system with encoder/decoder loopback for testing
+- **`rhs2116_link_encoder.v`** - Transmit side top-level module
+- **`rhs2116_link_decoder.v`** - Receive side top-level module
+
+### Test Entry
+- **`testbench/tb_spi_coax_system.v`** - System-level simulation with sensor model
+
+### System Architecture
 
 ### Transmit Side (Sensor End)
 ```
-RHS2116 → SPI Master (24MHz) → Async FIFO → Frame Packer (80MHz) → Manchester Encoder (160MHz) → Coax
+RHS2116 → SPI Master (64MHz) → Async FIFO → Frame Packer (100MHz) → Manchester Encoder (100MHz) → Coax
 ```
 
 ### Receive Side (Remote End)
 ```
-Coax → Soft CDR (240MHz) → Manchester Decoder → Frame Sync (80MHz) → Data Output
+Coax → CDR (200MHz) → Frame Sync (100MHz) → Async FIFO → Data Output
+```
+
+## ⏱️ Clock Domain Architecture
+
+### Transmit Side (Encoder)
+```
+64MHz SPI Domain (clk_spi)
+├── spi_master_rhs2116.v
+└── async_fifo_generic (write side)
+    ↓ CDC via Async FIFO
+100MHz System Domain (clk_sys)
+├── frame_packer_100m.v
+├── manchester_encoder_100m.v
+└── rhs2116_link_encoder.v
+```
+
+### Receive Side (Decoder)
+```
+200MHz CDR Domain (clk_link)
+├── cdr_4x_oversampling.v
+└── async_fifo_generic (write side)
+    ↓ CDC via Async FIFO
+100MHz System Domain (clk_sys)
+├── frame_sync_100m.v
+└── rhs2116_link_decoder.v
+```
+
+### System Level (top.v)
+```
+- clk_spi: 64MHz (SPI Master)
+- clk_sys: 100MHz (System/Link Logic)
+- clk_link: 200MHz (CDR Oversampling)
 ```
 
 ## 📦 Core Modules Analysis
 
 ### 1. SPI Master Module (`spi_master_rhs2116.v`)
-**Clock Domain:** 24 MHz (`clk_spi`)
+**Clock Domain:** 64 MHz (`clk_spi`)
 **Interface:**
 - **Inputs:** `clk_spi`, `rst_n`, `enable`, `miso`
-- **Outputs:** `cs_n`, `sclk`, `mosi`, `spi_data_out[31:0]`, `spi_data_valid`
-- **Key Parameters:** `CLK_DIV=2`, `CS_GAP_CYCLES=16`
+- **Outputs:** `cs_n`, `sclk`, `mosi`, `data_out[31:0]`, `data_valid`
+- **Key Parameters:** 64MHz → 16MHz SCLK, Mode 1 (CPOL=0, CPHA=1)
 
 **Timing Relationships:**
-- Generates 24 MHz SPI clock from 48-96 MHz input
+- Generates 16 MHz SPI clock from 64 MHz input (divide by 4)
 - 32-bit data frames with 16-cycle CS gaps
 - Discards first 2 frames (RHS2116 latency compensation)
 - Continuous channel polling (0-15) with CONVERT commands
+- Data Rate: 446.4k frames/sec (16 channels @ 16MHz SCLK)
 
-### 2. Async FIFO (`async_fifo.v`)
-**Clock Domains:** 24 MHz write → 80 MHz read
+### 2. Async FIFO (`async_fifo_generic.v`)
+**Clock Domains:** 64 MHz write → 100 MHz read (in frame_packer) / 200MHz write → 100MHz read (in decoder)
 **Interface:**
-- **Write Port:** `clk_wr`, `wr_en`, `wr_data[31:0]`, `wr_full`, `wr_almost_full`
-- **Read Port:** `clk_rd`, `rd_en`, `rd_data[31:0]`, `rd_empty`, `rd_valid`
-- **Parameters:** `DATA_WIDTH=32`, `ADDR_WIDTH=6` (64-depth)
+- **Write Port:** `clk_wr`, `rst_wr_n`, `din[31:0]`, `wr_en`, `full`, `almost_full`
+- **Read Port:** `clk_rd`, `rst_rd_n`, `dout[31:0]`, `rd_en`, `empty`, `valid`
+- **Parameters:** `DATA_WIDTH=32`, `ADDR_WIDTH=4` (16-depth)
 
 **Critical Features:**
 - Gray code pointer synchronization
-- Clock domain crossing safety
-- Almost-full flag for SPI throttling
-- 2-clock cycle synchronization delay
+- ASYNC_REG attributes for CDC protection
+- Almost-full flag for flow control (threshold: 14/16 entries)
+- Safe clock domain crossing with double flip-flop sync
 
-### 3. Frame Packer (`frame_packer_80m.v`)
-**Clock Domain:** 80 MHz (`clk_link`)
+### 3. Frame Packer (`frame_packer_100m.v`)
+**Clock Domain:** 100 MHz (`clk_sys`)
 **Interface:**
-- **Input:** `fifo_dout[31:0]`, `fifo_empty`
-- **Output:** `fifo_rd_en`, `tx_bit`, `tx_bit_valid`, `tx_bit_ready`
-- **Frame Format:** 56-bit → `{SYNC(8), CNT(8), DATA(32), CRC(8)}`
+- **Input:** `clk_spi`, `din[31:0]`, `din_valid` (64MHz domain)
+- **Output:** `tx_bit`, `tx_bit_valid`, `tx_bit_ready`, `frame_count[7:0]`
+- **Frame Format:** 56-bit → `{SYNC(8'hAA), CNT(8), DATA(32), CRC(8)}`
 
 **Timing Sequence:**
 ```
-1. Assert `fifo_rd_en` when `!fifo_empty && !sending`
-2. Read data on next cycle, calculate CRC
-3. Shift out 56 bits MSB-first with ready/valid handshake
-4. Update 8-bit frame counter
+1. Internal Async FIFO bridges 64MHz → 100MHz domains
+2. Assemble frame: SYNC + counter + data + CRC-8 (poly 0x07)
+3. Serial output: 56 bits MSB-first with ready/valid handshake
+4. Bit rate: 25 Mbps (data) → 50 Mbps (Manchester)
 ```
 
-### 4. Manchester Encoder (`manchester_encoder_serial.v`)
-**Clock Domain:** 160 MHz (`clk_160m`)
+### 4. Manchester Encoder (`manchester_encoder_100m.v`)
+**Clock Domain:** 100 MHz (`clk_sys`)
 **Interface:**
-- **Input:** `bit_in`, `bit_valid`
-- **Output:** `bit_ready`, `manch_out`
+- **Input:** `bit_in`, `bit_valid`, `tx_en`
+- **Output:** `bit_ready`, `ddr_p`, `ddr_n` (differential)
 
 **Encoding Timing:**
-- 2 clock cycles per bit (80 Mbps → 160 MHz)
-- Phase 0: Output original bit
-- Phase 1: Output inverted bit
-- Ready only during phase 0
+- 4 clock cycles per bit (25 Mbps → 100 MHz)
+- Encoding: bit=0 → 0→1 transition, bit=1 → 1→0 transition
+- Differential DDR output with complement
+- Ready/valid handshake protocol
 
-### 5. Soft CDR (`soft_cdr.v`)
-**Clock Domain:** 240 MHz (`clk_240m`)
+### 5. Clock Data Recovery (`cdr_4x_oversampling.v`)
+**Clock Domain:** 200 MHz (`clk_link`)
 **Interface:**
-- **Input:** `manch_in`
-- **Output:** `data_out`, `data_valid`, `phase_locked`, `phase_error_cnt[1:0]`
+- **Input:** `manch_in`, `rst_n`
+- **Output:** `bit_out`, `bit_valid`, `locked`
 
 **Critical Timing:**
-- 3x oversampling (240 MHz for 80 Mbps data)
-- Phase tracking with 0-2 state machine
-- Edge detection using 3-sample history
-- Phase adjustment after 4 consecutive errors
+- 4x oversampling (200 MHz for ~50 Mbps Manchester)
+- Phase quality tracking with adaptive selection
+- 3-state lock detection: UNLOCKED/LOCKING/LOCKED
+- Lock: 32 consecutive valid transitions required
+- Tracking range: ±150 ppm for clock drift compensation
 
-### 6. Frame Sync (`frame_sync.v`)
-**Clock Domain:** 80 MHz (`clk_link`)
+### 6. Frame Synchronization (`frame_sync_100m.v`)
+**Clock Domain:** 100 MHz (`clk_sys`)
 **Interface:**
-- **Input:** `bit_in`, `bit_valid`
+- **Input:** `bit_in`, `bit_valid` (from CDR)
 - **Output:** `data_out[31:0]`, `data_valid`, `frame_error`, `sync_lost`
 
 **Synchronization Process:**
 ```
-1. Search for SYNC pattern (0xA5) in 48-bit shift register
-2. Validate with CRC check
-3. Track frame counter continuity
-4. Output 32-bit data with valid flag
-5. Error handling: lose sync after 8 consecutive CRC errors
+1. SEARCH: Look for SYNC pattern (0xAA) in sliding window
+2. SYNC: Accumulate 56 bits for complete frame
+3. VERIFY: Validate CRC-8 and frame counter continuity
+4. Output: 32-bit data when valid frame detected
+5. Error handling: Auto-resync after 8 consecutive CRC errors
 ```
+
+## 🔄 Data Flow & Timing Sequence
+
+### Transmit Path (Sensor → Coax)
+1. **SPI Acquisition** (64MHz domain)
+   - RHS2116 sensor polled via SPI (Mode 1, CPOL=0, CPHA=1)
+   - 32-bit data @ 446.4k frames/sec
+   - Channels 0-15 polled sequentially
+
+2. **Clock Domain Crossing**
+   - Async FIFO bridges 64MHz → 100MHz domains
+   - 16-depth buffering prevents data loss
+   - Gray code pointer synchronization ensures safety
+
+3. **Frame Assembly** (100MHz domain)
+   - 32-bit data + 8-bit counter + 8-bit CRC-8
+   - SYNC byte (0xAA) prepended
+   - 56-bit total frame length
+
+4. **Manchester Encoding** (100MHz domain)
+   - Serial: 25 Mbps data rate
+   - Manchester: 50 Mbps line rate (100MHz DDR)
+   - 4 clock cycles per bit
+
+### Receive Path (Coax → Data Out)
+1. **Clock Data Recovery** (200MHz domain)
+   - 4x oversampling (~50 Mbps Manchester)
+   - Edge detection and phase tracking
+   - Lock detection with 3-state FSM
+
+2. **Frame Synchronization** (100MHz domain)
+   - SYNC pattern detection (0xAA)
+   - CRC-8 validation
+   - Frame counter continuity check
+
+3. **Clock Domain Crossing**
+   - Async FIFO bridges CDR → System domains
+   - Handles rate matching and buffering
 
 ## 🔧 Top-Level Integration
 
-### Encoder (`spi_coax_encoder.v`)
-**Clock Requirements:** 24 MHz, 80 MHz, 160 MHz (phase-aligned)
+### Encoder (`rhs2116_link_encoder.v`)
+**Clock Requirements:** 64 MHz, 100 MHz (phase-aligned)
 **Data Flow:**
 ```
-RHS2116_SPI → async_fifo → frame_packer → manchester_encoder → coax_out
+RHS2116_SPI → frame_packer_100m (with internal async_fifo) → manchester_encoder_100m → ddr_p/n
 ```
-**Status Signals:** `fifo_full`, `fifo_empty`, `frame_count[7:0]`, `link_active`
+**Status Signals:** `link_active`, `frame_count[7:0]`
 
-### Decoder (`spi_coax_decoder.v`)
-**Clock Requirements:** 240 MHz, 80 MHz
+### Decoder (`rhs2116_link_decoder.v`)
+**Clock Requirements:** 200 MHz, 100 MHz
 **Data Flow:**
 ```
-coax_in → soft_cdr → manchester_decoder → frame_sync → data_out[31:0]
+manch_in → cdr_4x_oversampling → frame_sync_100m → async_fifo_generic → data_out[31:0]
 ```
-**Status Signals:** `cdr_locked`, `frame_error`, `sync_lost`, `phase_error_cnt[1:0]`
+**Status Signals:** `cdr_locked`, `frame_error`, `sync_lost`
 
-## ⚡ Critical Timing Relationships
+## 🧪 Test Coverage
 
-### Clock Domain Boundaries
-1. **24 MHz → 80 MHz:** Async FIFO (SPI to Link)
-2. **80 MHz → 160 MHz:** Direct handshake (Frame Packer to Manchester)
-3. **240 MHz → 80 MHz:** Synchronizer registers (CDR to Frame Sync)
+### System Testbench
+- **File**: `testbench/tb_spi_coax_system.v`
+- **Coverage**: Full system loopback with sensor model
+- **Features**:
+  - Multi-clock domain (64MHz/100MHz/200MHz)
+  - RHS2116 sensor behavior simulation
+  - CDR lock monitoring
+  - Frame validation and error checking
 
-### Data Rate Calculations
-- **Payload:** 714 kS/s × 32-bit = 22.85 Mbps
-- **With Overhead:** 714 kS/s × 48-bit = 34.27 Mbps
-- **Manchester Rate:** 34.27 Mbps × 2 = 68.54 Mbps
-- **Design Target:** 80 Mbps (16% margin)
+### Test Scenarios
+- System initialization and reset
+- CDR lock acquisition
+- Continuous data transmission
+- Frame error injection
+- Clock domain crossing stress testing
 
-### Timing Critical Paths
-1. **240 MHz CDR:** Phase detection logic (most critical)
-2. **160 MHz Encoder:** Bit phase switching
-3. **80 MHz Frame Processing:** CRC calculation and bit shifting
+### Critical Timing Constraints
+- **200MHz CDR logic**: Most timing critical path
+- **Clock relationships**: Phase alignment recommended
+- **I/O timing**: DDR output requires proper constraints
 
 ## 🔗 Module Interconnection Matrix
 
