@@ -94,11 +94,35 @@ module frame_sync_100m (
 
             case (state)
                 // SEARCH: Look for SYNC pattern
+                // SEARCH: Look for SYNC pattern
                 SEARCH: begin
                     if (shift_reg[55:48] == SYNC_PATTERN) begin
-                        // Found potential frame start
-                        state   <= SYNC;
-                        bit_cnt <= 6'b000001;  // Already have 8 bits
+                        // Found potential frame start - Check CRC immediately
+                        if (calc_crc == shift_reg[7:0]) begin
+                            // Good frame
+                            error_cnt <= 4'b0;
+
+                            // Check frame counter continuity (if we were tracking)
+                            if (shift_reg[47:40] != frame_cnt) begin
+                                // If we were searching, we might have skipped frames, 
+                                // so this is expected, but we report it if we thought we were close?
+                                // Actually, if we are in SEARCH, we might be starting up.
+                                // Let's just report sync_lost if it mismatches, 
+                                // but since we are in SEARCH, maybe we just accept it?
+                                // The original VERIFY logic sets sync_lost. We'll do the same.
+                                sync_lost <= 1'b1;
+                            end
+
+                            frame_cnt <= shift_reg[47:40] + 8'b1;
+
+                            // Output data
+                            data_out   <= shift_reg[39:8];
+                            data_valid <= 1'b1;
+
+                            // Transition to SYNC to wait for NEXT frame
+                            state   <= SYNC;
+                            bit_cnt <= 6'b0;
+                        end
                     end
                 end
 

@@ -15,7 +15,7 @@
 //   - Full/Empty flags with safe Gray code comparison
 // ============================================================================
 
-module async_fifo_200to100 #(
+module async_fifo_generic #(
     parameter DATA_WIDTH = 32,
     parameter ADDR_WIDTH = 4
 )(
@@ -147,7 +147,18 @@ module async_fifo_200to100 #(
                                          wr_gray_rd2[PTR_WIDTH-3:0]});
 
     // Almost full: threshold-based for flow control
-    wire [PTR_WIDTH-1:0] used_words_wr = wr_ptr_bin - rd_gray_wr2;
+    // Gray to Binary conversion for rd_gray_wr2
+    reg [PTR_WIDTH-1:0] rd_ptr_bin_wr;
+    integer i;
+    always @(*) begin
+        rd_ptr_bin_wr[PTR_WIDTH-1] = rd_gray_wr2[PTR_WIDTH-1];
+        for (i = PTR_WIDTH-2; i >= 0; i = i - 1) begin
+            rd_ptr_bin_wr[i] = rd_ptr_bin_wr[i+1] ^ rd_gray_wr2[i];
+        end
+    end
+
+    // Almost full: threshold-based for flow control
+    wire [PTR_WIDTH-1:0] used_words_wr = wr_ptr_bin - rd_ptr_bin_wr;
     assign almost_full = (used_words_wr >= ALMOST_FULL_THRESHOLD[PTR_WIDTH-1:0]);
 
     // ========================================================================

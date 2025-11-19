@@ -12,7 +12,7 @@
 //   - Output: bit_ready, ddr_p, ddr_n (differential DDR)
 // ============================================================================
 
-module manchester_encoder_ddr (
+module manchester_encoder_100m (
     input  wire clk_sys,      // 100MHz system clock
     input  wire rst_n,
     input  wire tx_en,        // Transmit enable (active high)

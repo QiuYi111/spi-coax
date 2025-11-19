@@ -33,6 +33,17 @@ module spi_master_rhs2116 (
 );
 
     // ========================================================================
+    // Parameters
+    // ========================================================================
+    localparam CMD_CONVERT     = 2'b00;
+    localparam CMD_PADDING     = 16'h0000;
+    localparam GAP_CYCLES      = 6'h0F;  // 16 cycles
+    localparam DISCARD_FRAMES  = 8'd2;
+    localparam SCLK_DIV_MAX    = 2'b11;  // Divide by 4
+    localparam SCLK_RISING_EDGE = 2'b01;
+    localparam SCLK_FALLING_EDGE = 2'b11;
+
+    // ========================================================================
     // Input synchronization (enable from clk_sys -> clk_spi)
     // ========================================================================
     reg enable_spi1, enable_spi2;
@@ -59,21 +70,21 @@ module spi_master_rhs2116 (
     assign sclk = sclk_cnt[1];  // 16MHz output (toggle every 4 cycles)
 
     // SCLK edge detection
-    wire sclk_falling = (sclk_cnt == 2'b11);  // Falling edge (sample MISO)
-    wire sclk_rising  = (sclk_cnt == 2'b01);  // Rising edge (update MOSI)
+    wire sclk_falling = (sclk_cnt == SCLK_FALLING_EDGE);  // Falling edge (sample MISO)
+    wire sclk_rising  = (sclk_cnt == SCLK_RISING_EDGE);  // Rising edge (update MOSI)
 
     // ========================================================================
     // RHS2116 CONVERT command generation
     // ========================================================================
     wire [31:0] convert_cmd = {
-        2'b00,    // CONVERT command
+        CMD_CONVERT,    // CONVERT command
         1'b0,     // U
         1'b0,     // M
         1'b1,     // D (DC-coupled, 10-bit mode)
         1'b0,     // H
         4'b0000,
         curr_chan,  // Channel number (6-bit)
-        16'h0000
+        CMD_PADDING
     };
 
     // ========================================================================
@@ -94,11 +105,10 @@ module spi_master_rhs2116 (
     reg [31:0] shifter_tx;  // Transmit shift register
     reg [31:0] shifter_rx;  // Receive shift register
 
-    // Output sync registers (clk_spi -> clk_sys)
-    reg [31:0] data_out_spi;  // Data in clk_spi domain
-    reg        data_valid_spi;
-    reg [31:0] data_out_sync1 /* synthesis altera_attribute = "-name ASYNC_REG ON" */;
-    reg        data_valid_sync1 /* synthesis altera_attribute = "-name ASYNC_REG ON" */;
+    // Output data (clk_spi domain)
+    // Note: Downstream modules must handle CDC (e.g., via Async FIFO)
+    reg [31:0] data_out_reg;
+    reg        data_valid_reg;
 
     // ========================================================================
     // Main state machine
@@ -114,14 +124,12 @@ module spi_master_rhs2116 (
             frame_cnt     <= 8'b0;
             shifter_tx    <= 32'b0;
             shifter_rx    <= 32'b0;
-            data_out_spi  <= 32'b0;
-            data_valid_spi<= 1'b0;
-            data_out_sync1 <= 32'b0;
-            data_valid_sync1 <= 1'b0;
-            data_out      <= 32'b0;
-            data_valid    <= 1'b0;
+            data_out_reg   <= 32'b0;
+            data_valid_reg <= 1'b0;
+            data_out       <= 32'b0;
+            data_valid     <= 1'b0;
         end else begin
-            data_valid_spi <= 1'b0;  // Default
+            data_valid_reg <= 1'b0;  // Default
 
             case (state)
                 // IDLE: Wait for enable
@@ -153,12 +161,12 @@ module spi_master_rhs2116 (
 
                         if (bit_cnt == 6'd31) begin
                             // Transfer complete
-                            data_out_spi <= {shifter_rx[30:0], miso};
+                            data_out_reg <= {shifter_rx[30:0], miso};
                             frame_cnt <= frame_cnt + 1'b1;
 
                             // Discard first 2 frames (RHS2116 latency)
-                            if (frame_cnt >= 8'd2)
-                                data_valid_spi <= 1'b1;
+                            if (frame_cnt >= DISCARD_FRAMES)
+                                data_valid_reg <= 1'b1;
 
                             state <= GAP;
                         end else begin
@@ -178,7 +186,7 @@ module spi_master_rhs2116 (
                     cs_n <= 1'b1;
                     mosi <= 1'b0;
 
-                    if (gap_cnt >= 6'h0F) begin  // 16 cycles gap
+                    if (gap_cnt >= GAP_CYCLES) begin  // 16 cycles gap
                         gap_cnt <= 6'b0;
                         curr_chan <= curr_chan + 1'b1;  // Next channel
                         state <= enable_sync ? LOAD : IDLE;
@@ -192,12 +200,9 @@ module spi_master_rhs2116 (
                 end
             endcase
 
-            // CDC: Sync data_valid back to clk_sys domain
-            // Note: data_out is stable when data_valid is asserted
-            data_out_sync1 <= data_out_spi;
-            data_valid_sync1 <= data_valid_spi;
-            data_out <= data_out_sync1;
-            data_valid <= data_valid_sync1;
+            // Output assignment
+            data_out   <= data_out_reg;
+            data_valid <= data_valid_reg;
         end
     end
 

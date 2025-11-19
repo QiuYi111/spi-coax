@@ -7,9 +7,9 @@ Generated: 2025-11-19 15:30:00
 ```
 /Users/jingyi/spi-coax/
 ├── spi_master_rhs2116.v          # SPI master for RHS2116 chip
-├── async_fifo.v                  # Clock domain crossing FIFO
+├── async_fifo_generic.v          # Clock domain crossing FIFO
 ├── frame_packer_80m.v            # Frame formatting with CRC
-├── manchester_encoder_serial.v   # Manchester line encoding
+├── manchester_encoder_100m.v     # Manchester line encoding
 ├── soft_cdr.v                    # Clock and data recovery
 ├── manchester_decoder_serial.v   # Manchester line decoding
 ├── frame_sync.v                  # Frame synchronization and CRC check
