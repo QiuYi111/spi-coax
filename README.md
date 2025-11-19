@@ -55,8 +55,6 @@ To build and simulate this project, you will need the following tools:
 
 ### Recommended Setup
 ```bash
-# Install iverilog and gtkwave on macOS (via Homebrew)
-brew install iverilog gtkwave
 
 # Install on Ubuntu/Debian
 sudo apt-get install iverilog gtkwave
