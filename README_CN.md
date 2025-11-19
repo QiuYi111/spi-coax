@@ -55,9 +55,6 @@
 
 ### 推荐配置
 ```bash
-# macOS 安装 (通过 Homebrew)
-brew install iverilog gtkwave
-
 # Ubuntu/Debian 安装
 sudo apt-get install iverilog gtkwave
 ```
