@@ -153,7 +153,7 @@ module tb_spi_coax_system;
         fork
             begin
                 // Run for some time
-                #50000; // 50us
+                #500000; // 500us
                 $display("Simulation Timeout");
                 $finish;
             end

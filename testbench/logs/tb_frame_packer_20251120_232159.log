@@ -1,0 +1,235 @@
+VCD info: dumpfile tb_frame_packer.vcd opened for output.
+FIFO Reset active at                    0
+Time:                    0, SPI_Valid: x, Packer_Din_Valid: x, Packer_Din: xxxxxxxx
+FP Time:                    0, din_valid: 0, din: 00000000
+FIFO Reset active at                    0
+FP Time:                    0, din_valid: 0, din: 00000000
+FIFO Reset active at                    0
+FP Time:                    0, din_valid: 0, din: 00000000
+FIFO Reset active at                    0
+FP Time:                    0, din_valid: 0, din: 00000000
+FIFO Reset active at                    0
+FP Time:                    0, din_valid: 0, din: 00000000
+FIFO Reset active at                    0
+FP Time:                    0, din_valid: 0, din: 00000000
+FIFO Reset active at                    0
+FP Time:                    0, din_valid: 1, din: aabbccdd
+FIFO Write: aabbccdd (ptr:  0)
+FIFO Clock:                    0, wr_en: 1, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 1, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+Frame Packer: Sending frame 00, data 00000000, crc ca
+FIFO Read: aabbccdd (ptr:  0)
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+FP Time:                    0, din_valid: 0, din: aabbccdd
+FIFO Clock:                    0, wr_en: 0, full: 0, rst_wr_n: 1
+tb_frame_packer.v:66: $finish called at 1775000 (1ps)

@@ -1,0 +1,8 @@
+VCD info: dumpfile tb_spi_master.vcd opened for output.
+Time:                    0, SPI_Valid: x, Packer_Din_Valid: x, Packer_Din: xxxxxxxx
+SPI Master: Received frame   2, data deadbeef
+SPI Master: Received frame   3, data deadbeef
+SPI Master: Received frame   4, data deadbeef
+Received data: deadbeef
+SPI Test PASSED
+tb_spi_master.v:72: $finish called at 12227281 (1ps)

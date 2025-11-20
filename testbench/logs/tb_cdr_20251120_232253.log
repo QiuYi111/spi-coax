@@ -1,0 +1,4 @@
+VCD info: dumpfile tb_cdr.vcd opened for output.
+Time:                    0, SPI_Valid: x, Packer_Din_Valid: x, Packer_Din: xxxxxxxx
+CDR Locked
+tb_cdr.v:73: $finish called at 5180000 (1ps)

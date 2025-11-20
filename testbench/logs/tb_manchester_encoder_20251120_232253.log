@@ -1,0 +1,3 @@
+VCD info: dumpfile tb_manchester_encoder.vcd opened for output.
+Time:                    0, SPI_Valid: x, Packer_Din_Valid: x, Packer_Din: xxxxxxxx
+tb_manchester_encoder.v:72: $finish called at 395000 (1ps)

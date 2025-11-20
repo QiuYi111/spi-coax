@@ -1,0 +1,26 @@
+==============================================================================
+SPI-Coax Production Test Summary
+==============================================================================
+Generated: Thu Nov 20 11:18:04 PM CST 2025
+Test Directory: /home/jingyi/spi-coax/testbench
+Project Root: /home/jingyi/spi-coax
+
+Test Results:
+------------
+Basic Tests: FAILED
+Production Tests: COMPLETED_WITH_WARNINGS
+Stress Tests: COMPLETED
+Module Tests: COMPLETED
+
+Log Files:
+----------
+Basic Test: /home/jingyi/spi-coax/testbench/logs/basic_test_20251120_231802.log
+Production Test: /home/jingyi/spi-coax/testbench/logs/production_test_20251120_231802.log
+Stress Test: /home/jingyi/spi-coax/testbench/logs/stress_test_20251120_231802.log
+Module Tests: /home/jingyi/spi-coax/testbench/logs/*_20251120_231802.log
+
+Reports:
+--------
+Production HTML Report: /home/jingyi/spi-coax/testbench/reports/production_test_20251120_231802.html
+
+==============================================================================
