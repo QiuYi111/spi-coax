@@ -5,13 +5,13 @@
 *_compile.log
 *_run.log
 test_reports/
-
+testbench/test_results/*
 # Build artifacts
 *.o
 *.a
 *.so
 *.out
-
+*.log
 # Editor/IDE files
 *.swp
 *.swo
