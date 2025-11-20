@@ -22,7 +22,7 @@ module frame_sync_100m (
     input  wire rst_n,
     input  wire bit_in,       // From CDR
     input  wire bit_valid,
-    output wire [31:0] data_out,
+    output reg  [31:0] data_out,
     output reg        data_valid,
     output reg        frame_error,
     output reg        sync_lost

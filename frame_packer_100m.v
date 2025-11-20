@@ -42,7 +42,7 @@ module frame_packer_100m (
     wire [31:0] fifo_dout;
     wire        fifo_empty;
     wire        fifo_full;
-    wire        fifo_rd_en;
+    reg         fifo_rd_en;
 
     async_fifo_generic #(
         .DATA_WIDTH(32),
