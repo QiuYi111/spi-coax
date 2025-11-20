@@ -4,9 +4,14 @@ sim_*
 testbench/sim_*
 testbench/*.vcd
 
-# Compiled simulation executables  
+# Compiled simulation executables (in root directory only)
 *.vvp
 *.out
+/test_*
+/simple_test
+
+# Test results
+testbench/test_results/
 
 # Editor/IDE files
 *.swp
