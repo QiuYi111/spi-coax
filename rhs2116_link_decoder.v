@@ -58,7 +58,7 @@ module rhs2116_link_decoder (
     wire        sync_lost_int;
 
     frame_sync_100m u_frame_sync (
-        .clk_sys    (clk_sys),
+        .clk_sys    (clk_link),  // Changed from clk_sys to clk_link to match CDR output domain
         .rst_n      (rst_n),
         .bit_in     (cdr_bit),
         .bit_valid  (cdr_bit_valid),
@@ -86,7 +86,7 @@ module rhs2116_link_decoder (
         .DATA_WIDTH(32),
         .ADDR_WIDTH(4)  // 16 entries
     ) u_async_fifo (
-        .clk_wr     (clk_sys),      // Frame Sync runs at clk_sys
+        .clk_wr     (clk_link),      // Frame Sync now runs at clk_link (200MHz)
         .rst_wr_n   (rst_n),
         .din        (fifo_din),
         .wr_en      (fifo_wr_en),

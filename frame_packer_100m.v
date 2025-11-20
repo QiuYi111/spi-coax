@@ -30,6 +30,11 @@ module frame_packer_100m (
     output wire [7:0]  frame_count
 );
 
+    always @(posedge clk_spi) begin
+        // if (din_valid) $display("Frame Packer: din_valid asserted, din=%h", din);
+        $display("FP Time: %t, din_valid: %b, din: %h", $time, din_valid, din);
+    end
+
     // ========================================================================
     // Frame format: {SYNC(8), CNT(8), DATA(32), CRC(8)}
     // ========================================================================
@@ -79,11 +84,11 @@ module frame_packer_100m (
         input [7:0]  cnt;
         integer i;
         reg [7:0] crc;
-        reg [39:0] msg;
+        reg [47:0] msg;
         begin
-            msg = {cnt, data};
+            msg = {SYNC_BYTE, cnt, data};
             crc = 8'h00;
-            for (i = 39; i >= 0; i = i - 1) begin
+            for (i = 47; i >= 0; i = i - 1) begin
                 if ((crc[7] ^ msg[i]) == 1'b1)
                     crc = {crc[6:0], 1'b0} ^ 8'h07;
                 else
@@ -137,6 +142,7 @@ module frame_packer_100m (
                     bit_cnt   <= 6'b0;
                     sending   <= 1'b1;
                     state     <= SEND;
+                    $display("Frame Packer: Sending frame %h, data %h, crc %h", frame_cnt, convert_data, convert_crc);
                 end
 
                 SEND: begin

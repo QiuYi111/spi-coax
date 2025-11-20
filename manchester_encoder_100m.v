@@ -31,6 +31,7 @@ module manchester_encoder_100m (
     // Half-cycle counter (4 cycles per bit)
     // ========================================================================
     reg [1:0] half_cnt;
+    reg       bit_reg;
 
     always @(posedge clk_sys or negedge rst_n) begin
         if (!rst_n) begin
@@ -38,6 +39,7 @@ module manchester_encoder_100m (
         end else if (tx_en && bit_valid && bit_ready) begin
             // New bit accepted, start counting from 0
             half_cnt <= 2'b01;
+            bit_reg  <= bit_in;
         end else if (tx_en && (half_cnt != 2'b11)) begin
             // Continue counting
             half_cnt <= half_cnt + 1'b1;
@@ -57,12 +59,12 @@ module manchester_encoder_100m (
     // Second half (cycles 2-3): output inverted bit
     wire first_half = (half_cnt < 2'b10);
 
-    assign ddr_p = tx_en ? (first_half ? bit_in : ~bit_in) : 1'b0;
+    assign ddr_p = tx_en ? (first_half ? bit_reg : ~bit_reg) : 1'b0;
     assign ddr_n = ~ddr_p;  // Complementary output
 
     // ========================================================================
     // Ready signal - asserted at end of bit (cycle 3)
     // ========================================================================
-    assign bit_ready = (half_cnt == 2'b11);
+    assign bit_ready = (half_cnt == 2'b00) || (half_cnt == 2'b11);
 
 endmodule

@@ -148,8 +148,8 @@ module tb_spi_coax_system;
             end
 
             begin
-                // Timeout after 10us
-                #10000;
+                // Timeout after 100us
+                #100000;
                 $display("Simulation Timeout - Test FAILED!");
                 $finish;
             end

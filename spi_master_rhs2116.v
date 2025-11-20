@@ -165,8 +165,10 @@ module spi_master_rhs2116 (
                             frame_cnt <= frame_cnt + 1'b1;
 
                             // Discard first 2 frames (RHS2116 latency)
-                            if (frame_cnt >= DISCARD_FRAMES)
+                            if (frame_cnt >= DISCARD_FRAMES) begin
                                 data_valid_reg <= 1'b1;
+                                $display("SPI Master: Received frame %d, data %h", frame_cnt, {shifter_rx[30:0], miso});
+                            end
 
                             state <= GAP;
                         end else begin

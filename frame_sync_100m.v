@@ -50,6 +50,7 @@ module frame_sync_100m (
     always @(posedge clk_sys) begin
         if (bit_valid) begin
             shift_reg <= {shift_reg[54:0], bit_in};
+            $display("Frame Sync: Shift Reg: %h", {shift_reg[54:0], bit_in});
         end
     end
 
@@ -98,6 +99,7 @@ module frame_sync_100m (
                 SEARCH: begin
                     if (shift_reg[55:48] == SYNC_PATTERN) begin
                         // Found potential frame start - Check CRC immediately
+                        $display("Frame Sync: Potential Sync at %t, CRC calc: %h, CRC in: %h", $time, calc_crc, shift_reg[7:0]);
                         if (calc_crc == shift_reg[7:0]) begin
                             // Good frame
                             error_cnt <= 4'b0;

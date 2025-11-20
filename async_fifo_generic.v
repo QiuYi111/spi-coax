@@ -61,6 +61,7 @@ module async_fifo_generic #(
         if (!rst_wr_n) begin
             wr_ptr_bin  <= {PTR_WIDTH{1'b0}};
             wr_ptr_gray <= {PTR_WIDTH{1'b0}};
+            $display("FIFO Reset active at %t", $time);
         end else begin
             wr_ptr_bin  <= wr_ptr_bin_next;
             wr_ptr_gray <= wr_ptr_gray_next;
@@ -68,7 +69,13 @@ module async_fifo_generic #(
             // Write to memory
             if (wr_en && !full) begin
                 mem[wr_ptr_bin[ADDR_WIDTH-1:0]] <= din;
+                $display("FIFO Write: %h (ptr: %d)", din, wr_ptr_bin);
+            end else if (wr_en && full) begin
+                $display("FIFO Write Dropped: Full!");
             end
+            // Unconditional debug
+            $display("FIFO Clock: %t, wr_en: %b, full: %b, rst_wr_n: %b", $time, wr_en, full, rst_wr_n);
+             if (wr_en === 1'bx) $display("FIFO WARNING: wr_en is X at %t", $time);
         end
     end
 
@@ -97,6 +104,7 @@ module async_fifo_generic #(
             if (rd_en && !empty) begin
                 rd_data_reg <= mem[rd_ptr_bin[ADDR_WIDTH-1:0]];
                 rd_valid_reg <= 1'b1;
+                $display("FIFO Read: %h (ptr: %d)", mem[rd_ptr_bin[ADDR_WIDTH-1:0]], rd_ptr_bin);
             end else begin
                 rd_valid_reg <= 1'b0;
             end

@@ -34,8 +34,8 @@ module cdr_4x_oversampling (
         sample_shift <= {sample_shift[2:0], manch_in};
     end
 
-    // Edge detection: check between samples 3 and 2 (200MHz domain)
-    wire transition = (sample_shift[3] != sample_shift[2]);
+    // Edge detection: check between samples 1 and 0 (200MHz domain)
+    wire transition = (sample_shift[1] != sample_shift[0]);
 
     // ========================================================================
     // Phase quality tracking
@@ -83,15 +83,8 @@ module cdr_4x_oversampling (
     // ========================================================================
     reg [1:0] sample_cnt;
 
-    always @(posedge clk_link) begin
-        if (!rst_n) begin
-            sample_cnt <= 2'b00;
-        end else if (sample_cnt == 2'b11) begin
-            sample_cnt <= 2'b00;
-        end else begin
-            sample_cnt <= sample_cnt + 1'b1;
-        end
-    end
+
+    // Logic moved to main state machine for synchronization
 
     // Bit output and valid signal (sample at bit center: sample_cnt == 1)
     wire at_bit_center = (sample_cnt == 2'b01);
@@ -112,13 +105,20 @@ module cdr_4x_oversampling (
         if (!rst_n) begin
             lock_state <= STATE_UNLOCKED;
             lock_timer <= 8'h00;
+            sample_cnt <= 2'b00;
         end else begin
+            sample_cnt <= sample_cnt + 1'b1; // Default increment
+
             case (lock_state)
                 // UNLOCKED: Search for valid Manchester transitions
                 STATE_UNLOCKED: begin
                     if (transition) begin
                         lock_state <= STATE_LOCKING;
                         lock_timer <= 8'h01;
+                        // Align sample counter to transition
+                        // We want sample_cnt=1 (at_bit_center) at the NEXT transition (8 cycles later)
+                        // So set current sample_cnt to 2
+                        sample_cnt <= 2'b10;
                     end
                 end
 

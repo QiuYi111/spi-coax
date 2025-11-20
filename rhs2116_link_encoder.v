@@ -56,6 +56,10 @@ module rhs2116_link_encoder (
         .data_valid (spi_valid)
     );
 
+    initial begin
+        $monitor("Time: %t, SPI_Valid: %b, Packer_Din_Valid: %b, Packer_Din: %h", $time, spi_valid, u_frame_packer.din_valid, u_frame_packer.din);
+    end
+
     // ========================================================================
     // Frame Packer (100MHz domain)
     // Instantiates FIFO internally to handle clk_spi -> clk_sys crossing
@@ -66,6 +70,7 @@ module rhs2116_link_encoder (
     wire [7:0]  packer_frame_cnt;
 
     frame_packer_100m u_frame_packer (
+        .clk_spi        (clk_spi),
         .clk_sys        (clk_sys),
         .rst_n          (rst_n),
         .din            (spi_data),
