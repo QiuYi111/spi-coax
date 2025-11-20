@@ -36,14 +36,14 @@ run_test() {
     local test_name=$1
     local test_file=$2
     local output_file="$RESULTS_DIR/${test_name}_${TIMESTAMP}.log"
-    
+
     echo -e "${BLUE}[TEST]${NC} Running $test_name..." | tee -a "$REPORT_FILE"
     TOTAL_TESTS=$((TOTAL_TESTS + 1))
-    
+
     # Compile
     if iverilog -g2009 -o "$RESULTS_DIR/sim_$test_name" "$test_file" ../*.v 2>&1 | tee "$output_file"; then
         # Run simulation
-        if vvp "$RESULTS_DIR/sim_$test_name" >> "$output_file" 2>&1; then
+        if timeout 300 vvp "$RESULTS_DIR/sim_$test_name" >> "$output_file" 2>&1; then
             # Check for errors in output
             if grep -q "ASSERTION FAILED\|CHECK FAILED\|ERROR\|FAILED" "$output_file"; then
                 echo -e "${RED}[FAIL]${NC} $test_name - Assertions failed" | tee -a "$REPORT_FILE"
@@ -105,7 +105,7 @@ echo "========================================"  | tee -a "$REPORT_FILE"
 echo ""                                         | tee -a "$REPORT_FILE"
 
 # Run system tests
-run_test "system_enhanced" "tb_spi_coax_system_enhanced.v" || true
+run_test "system" "tb_spi_coax_system.v" || true
 run_test "system_fast" "tb_spi_coax_system_fast.v" || true
 
 echo ""                                         | tee -a "$REPORT_FILE"
@@ -113,8 +113,8 @@ echo "========================================"  | tee -a "$REPORT_FILE"
 echo "TEST SUMMARY"                             | tee -a "$REPORT_FILE"
 echo "========================================"  | tee -a "$REPORT_FILE"
 echo "Total Tests:  $TOTAL_TESTS"              | tee -a "$REPORT_FILE"
-echo -e "${GREEN}Passed:${NC}       $PASSED_TESTS" | tee -a "$REPORT_FILE"
-echo -e "${RED}Failed:${NC}       $FAILED_TESTS" | tee -a "$REPORT_FILE"
+echo -e "Passed: ${GREEN}$PASSED_TESTS${NC}"       | tee -a "$REPORT_FILE"
+echo -e "Failed: ${RED}$FAILED_TESTS${NC}"         | tee -a "$REPORT_FILE"
 
 if [ $TOTAL_TESTS -gt 0 ]; then
     PASS_RATE=$((PASSED_TESTS * 100 / TOTAL_TESTS))

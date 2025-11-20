@@ -265,7 +265,8 @@ module tb_cdr;
             end
             
             // Send alternating pattern
-            for (i = 0; i < 32; i = i send_manchester_bit(i % 2, 0.0);
+            for (i = 0; i < 32; i = i + 1) begin
+                send_manchester_bit(i % 2, 0.0);
             end
             
             $display("Alternating pattern test completed");

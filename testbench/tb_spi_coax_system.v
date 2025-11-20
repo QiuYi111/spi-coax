@@ -155,7 +155,7 @@ module tb_spi_coax_system;
                 // Run for some time
                 #50000; // 50us
                 $display("Simulation Timeout");
-                $finish;
+                $finish(0);
             end
             
             begin
@@ -169,7 +169,7 @@ module tb_spi_coax_system;
                 end
                 $display("Received 10 frames successfully.");
                 #1000;
-                $finish;
+                $finish(0);
             end
         join
     end

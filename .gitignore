@@ -1,25 +1,19 @@
-# Simulation output files
+# Simulation artifacts
 *.vcd
-sim_*
-testbench/sim_*
-testbench/*.vcd
-
-# Compiled simulation executables (in root directory only)
 *.vvp
-*.out
-/test_*
-/simple_test
+*_sim
+*_compile.log
+*_run.log
+test_reports/
 
-# Test results
-testbench/test_results/
+# Build artifacts
+*.o
+*.a
+*.so
+*.out
 
 # Editor/IDE files
 *.swp
 *.swo
 *~
 .DS_Store
-
-# Build artifacts
-*.o
-*.a
-*.so

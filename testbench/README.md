@@ -175,12 +175,32 @@ Quick verification test with reduced timeout for regression testing.
 
 ### Run All Tests
 
+**Option 1: Quick Test Runner (Basic)**
+
 ```bash
 cd testbench
 ./run_all_tests.sh
 ```
 
-This executes all testbenches and generates a comprehensive report in `test_results/`.
+- Fast execution (~2-3 minutes)
+- Basic pass/fail reporting
+- Text format output in `test_results/`
+- Ideal for continuous integration
+
+**Option 2: Comprehensive Test Runner (Advanced)**
+
+```bash
+./run_all_tests.sh
+```
+
+- Detailed analysis (~5-8 minutes)
+- Markdown report with statistics
+- VCD waveform analysis
+- Code complexity metrics
+- Performance measurements
+- Ideal for development and release validation
+
+Both runners execute the same test suite but with different reporting depth and analysis features.
 
 ### Run Individual Test
 
@@ -313,6 +333,12 @@ Uncomment debug `$display` statements in DUT modules for detailed tracing.
 
 Run test suite after any code changes:
 
+**Fast regression:**
+```bash
+cd testbench && ./run_all_tests.sh
+```
+
+**Comprehensive regression:**
 ```bash
 ./run_all_tests.sh
 ```
@@ -323,10 +349,10 @@ Should complete in < 5 minutes with all tests passing.
 
 Before FPGA deployment:
 
-1. Run full test suite: `./run_all_tests.sh`
+1. Run comprehensive test suite: `./run_all_tests.sh`
 2. Verify all tests pass
 3. Check performance metrics meet specifications
-4. Review test report for warnings
+4. Review detailed Markdown report for warnings and statistics
 
 ---
 
