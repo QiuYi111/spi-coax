@@ -1,0 +1,20 @@
+# Simulation output files
+*.vcd
+sim_*
+testbench/sim_*
+testbench/*.vcd
+
+# Compiled simulation executables  
+*.vvp
+*.out
+
+# Editor/IDE files
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build artifacts
+*.o
+*.a
+*.so
