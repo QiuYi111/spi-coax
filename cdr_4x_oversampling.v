@@ -68,7 +68,7 @@ module cdr_4x_oversampling (
 
     always @(posedge clk_link) begin
         if (!rst_n) begin
-            phase_sel <= 2'b01;  // Default: slightly early position
+            phase_sel <= 2'b10;  // Default: center position - align with Manchester first half
         end else if (phase_quality <= -16) begin
             // Quality too low: move to later phase
             phase_sel <= phase_sel + 1'b1;
